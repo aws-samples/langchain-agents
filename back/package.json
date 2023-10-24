@@ -25,7 +25,7 @@
     "@aws-cdk/aws-dynamodb": "^1.189.0",
     "@aws-cdk/aws-iam": "^1.189.0",
     "@aws-cdk/aws-lambda": "^1.189.0",
-    "aws-cdk-lib": "2.59.0",
+    "aws-cdk-lib": "2.80.0",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.21"
   }
