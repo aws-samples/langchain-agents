@@ -102,7 +102,7 @@ export function Chat(user: any) {
         host: functionUrl.hostname,
       },
       body: JSON.stringify({
-        messages: lastMessage,
+        message: lastMessage,
         user: user,
         userId: user?.attributes?.sub ?? cookie[COOKIE_NAME],
       }),
