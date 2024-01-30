@@ -9,7 +9,7 @@ Currently the OpenAI stack includes a simple conversational Langchain agent runn
 
 The AWS Bedrock stack includes a conversational chain running on AWS Lambda, using DynamoDB for memory, and a Bedrock Knowledge Base for RAG. It is fronted through Amazon Lex and can be connected to Amazon Connect for a full call center experience.
 
-## Creating a new Lambda Layer with the Langchain SDK
+## Creating a new Lambda Layer with the latest Langchain SDK
 To create a new Lambda Layer compatible with the latest Python runtime and the latest langchain, boto3 or openai package you can: Go into Amazon Codebuild. [Pick the runtime you are trying to build the Lambda Layer for](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html). Set the source as none and in the buildspec add the following:
 
 ```yaml
