@@ -59,6 +59,8 @@ npx cdk deploy --require-approval never
 
 5. Navigate to [https://smith.langchain.com](Langsmith) and check the trace of the app.
 
+![Alt text](./langsmith_trace.png?raw=true "LangSmith trace")
+
 ## Cleanup
 
 1. To delete the stack, run:
