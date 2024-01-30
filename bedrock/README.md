@@ -74,3 +74,7 @@ npx cdk destroy
 - `cdk deploy` deploy this stack to your default AWS account/region
 - `cdk diff` compare deployed stack with current state
 - `cdk docs` open CDK documentation
+
+## Amazon Connect
+
+To connect the Amazon Lex bot to Amazon Connect, follow the instructions to [Add the Amazon Lex bot to your Amazon Connect instance](https://docs.aws.amazon.com/connect/latest/adminguide/amazon-lex.html#lex-bot-add-to-connect).
