@@ -31,4 +31,4 @@ artifacts:
 ```
 For the artifact location pick the S3 bucket where you want the created zip file to go. Then just download that zip and use it to create the Lambda Layer.
 
-Note: This will create a zip file with the latest langchain, boto3 and numpy packages. To create one with openai instead swap boto3 for openai.
+Note: This will create a zip file with the latest langchain, boto3 and numpy packages. To create one with openai instead swap boto3 for openai in the yaml commands.
