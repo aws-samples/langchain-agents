@@ -23,25 +23,32 @@ git clone https://github.com/aws-samples/langchain-agents.git
 cd langchain-agents/bedrock/knowledge-base-lex-langsmith
 ```
 
-2. Copy .env.sample to .env and update the values with your own:
+2. Unzip the lambda layer 
+
+```
+unzip layers/langchain-bedrock/layer.zip -d layers/langchain-bedrock
+rm layers/langchain-bedrock/layer.zip
+```
+
+3. Copy .env.sample to .env and update the values with your own:
 
 ```
 cp .env.sample .env
 ```
 
-3. Install the project dependencies:
+4. Install the project dependencies:
 
 ```
 npm install
 ```
 
-4. Use AWS CDK to synthesize an AWS CloudFormation:
+5. Use AWS CDK to synthesize an AWS CloudFormation:
 
 ```
 npx cdk synth
 ```
 
-5. Use AWS CDK to deploy the AWS resources for the pattern:
+6. Use AWS CDK to deploy the AWS resources for the pattern:
 
 ```
 npx cdk deploy --require-approval never
