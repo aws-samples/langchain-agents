@@ -22,12 +22,10 @@ git clone https://github.com/aws-samples/langchain-agents.git
 cd langchain-agents
 ```
 
-2. Change directory to the backend directory and unzip the Langchain Lambda layer:
+2. Change directory to the backend directory:
 
 ```
 cd back
-unzip layers/langchain-layer.zip -d layers/langchain-layer
-rm layers/langchain-layer.zip
 ```
 
 3. Install the project dependencies:
