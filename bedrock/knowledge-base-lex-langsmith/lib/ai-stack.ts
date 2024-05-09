@@ -7,14 +7,167 @@ import * as ssm from 'aws-cdk-lib/aws-ssm';
 import * as lex from 'aws-cdk-lib/aws-lex';
 import { NagSuppressions } from 'cdk-nag';
 import * as dotenv from 'dotenv';
+import { Duration, CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import * as uuid from "uuid";
+import { bedrock } from "@cdklabs/generative-ai-cdk-constructs";
+import { S3EventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
+import { join } from 'path';
 
 dotenv.config();
 
-const knowledge_base_id = process.env.KNOWLEDGE_BASE_ID!;
+let knowledge_base_id = process.env.KNOWLEDGE_BASE_ID!;
 
 export class AIStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+
+    if (!knowledge_base_id) {
+
+      const wspBucket = new s3.Bucket(this, "WhatsappBucket" + uuid.v4(),
+        {
+          lifecycleRules: [{
+            expiration: Duration.days(10),
+          }],
+          blockPublicAccess: {
+            blockPublicAcls: true,
+            blockPublicPolicy: true,
+            ignorePublicAcls: true,
+            restrictPublicBuckets: true,
+          },
+          encryption: s3.BucketEncryption.S3_MANAGED,
+          enforceSSL: true,
+          removalPolicy: RemovalPolicy.DESTROY,
+          autoDeleteObjects: true,
+        });
+
+        // Add CDK Nag suppression for wildcard resource
+        NagSuppressions.addResourceSuppressions(wspBucket, 
+          [
+           { 
+            id: 'AwsSolutions-S1', 
+            reason: 'The S3 Bucket has server access logs disabled.'
+           }
+          ]
+        );
+
+      const wspKnowledgeBase = new bedrock.KnowledgeBase(
+        this,
+        "WhatsappKnowledgeBase",
+        {
+          embeddingsModel: bedrock.BedrockFoundationModel.TITAN_EMBED_TEXT_V1
+        }
+      );
+
+      NagSuppressions.addResourceSuppressionsByPath(
+        this,
+        '/ServerlessAIStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole',
+        [
+          {
+            id: 'AwsSolutions-IAM4',
+            reason: 'CDK CustomResource LogRetention Lambda uses the AWSLambdaBasicExecutionRole AWS Managed Policy. Managed by CDK.',
+          },
+          {
+            id: 'AwsSolutions-IAM5',
+            reason: 'CDK CustomResource LogRetention Lambda uses a wildcard to manage log streams created at runtime. Managed by CDK.',
+          },
+        ],
+        true,
+      );
+
+      const docsDataSource = new bedrock.S3DataSource(
+        this,
+        "WhatsappDataSource",
+        {
+          bucket: wspBucket,
+          knowledgeBase: wspKnowledgeBase,
+          dataSourceName: "Whatsapp",
+          chunkingStrategy: bedrock.ChunkingStrategy.FIXED_SIZE,
+          maxTokens: 1024,
+          overlapPercentage: 20,
+        }
+      );
+
+      const s3PutEventSource = new S3EventSource(wspBucket, {
+        events: [s3.EventType.OBJECT_CREATED_PUT],
+      });
+
+      // Defines a lambda execution role
+      const lambdaIngestionRole = new iam.Role(this, 'lambdaIngestionRole', {
+        assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+        inlinePolicies: {
+          'LambdaBasicExecution': new iam.PolicyDocument({
+            statements: [
+              new iam.PolicyStatement({
+                effect: iam.Effect.ALLOW,
+                actions: [
+                  'logs:CreateLogGroup',
+                  'logs:CreateLogStream',
+                  'logs:PutLogEvents'
+                ],
+                resources: [
+                  `arn:aws:logs:${props?.env?.region}:${props?.env?.account}:log-group:/aws/lambda/start-ingestion-trigger:*`
+                ]
+              }),
+              new iam.PolicyStatement({
+                actions: ["bedrock:StartIngestionJob"],
+                resources: [wspKnowledgeBase.knowledgeBaseArn],
+              })
+            ]
+          })
+        }
+      });
+
+      const lambdaIngestionJob = new NodejsFunction(this, 'IngestionJob', {
+        runtime: Runtime.NODEJS_20_X,
+        entry: join(__dirname, '../lambda/index.js'),
+        functionName: `start-ingestion-trigger`,
+        timeout: Duration.minutes(15),
+        environment: {
+          KNOWLEDGE_BASE_ID: wspKnowledgeBase.knowledgeBaseId,
+          DATA_SOURCE_ID: docsDataSource.dataSourceId,
+        },
+        role: lambdaIngestionRole,
+      });
+
+      lambdaIngestionJob.addEventSource(s3PutEventSource);
+
+      // Add CDK Nag suppression for wildcard resource
+      NagSuppressions.addResourceSuppressions(lambdaIngestionRole, [{
+        id: 'AwsSolutions-IAM5',
+        reason: 'Wildcard permission is needed to create custom Lambda execution role to write to CloudWatch Logs.'
+      }],
+        true
+      );
+
+      NagSuppressions.addResourceSuppressionsByPath(
+        this,
+        '/ServerlessAIStack/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role',
+        [
+          {
+            id: 'AwsSolutions-IAM4',
+            reason: 'CDK CustomResource BucketNotifications Lambda uses the AWSLambdaBasicExecutionRole AWS Managed Policy. Managed by CDK.',
+          },
+          {
+            id: 'AwsSolutions-IAM5',
+            reason: 'CDK CustomResource BucketNotifications Lambda uses a wildcard to manage log streams created at runtime. Managed by CDK.',
+          },
+        ],
+        true,
+      );
+
+      knowledge_base_id = wspKnowledgeBase.knowledgeBaseId;
+
+      new CfnOutput(this, "WhatsappBucketName", {
+        value: wspBucket.bucketName,
+      });
+
+      new CfnOutput(this, "WhatsappknowledgeBaseId", {
+        value: wspKnowledgeBase.knowledgeBaseId,
+      });
+    }
 
     // Defines a DynamoDB Table to store conversations
     const conversationTable = new dynamodb.Table(this, 'ConversationTable', {
@@ -49,7 +202,7 @@ export class AIStack extends cdk.Stack {
                 'bedrock:InvokeModel',
               ],
               resources: [
-                `arn:aws:bedrock:${props?.env?.region}::foundation-model/anthropic.claude-instant-v1`,
+                `arn:aws:bedrock:${props?.env?.region}::foundation-model/${bedrock.BedrockFoundationModel.ANTHROPIC_CLAUDE_SONNET_V1_0}`,
               ]
             }),
             new iam.PolicyStatement({
@@ -81,11 +234,11 @@ export class AIStack extends cdk.Stack {
     LexMessageProcessor.grantInvoke(new iam.ServicePrincipal('lex.amazonaws.com'))
 
     // Add CDK Nag suppression for wildcard resource
-    NagSuppressions.addResourceSuppressions(lambdaRole,  [{ 
-      id: 'AwsSolutions-IAM5', 
+    NagSuppressions.addResourceSuppressions(lambdaRole, [{
+      id: 'AwsSolutions-IAM5',
       reason: 'Wildcard permission is needed to create custom Lambda execution role to write to CloudWatch Logs'
     }],
-    true
+      true
     );
 
     // Build Langchain layer that includes Bedrock from layers/langchain-layer.zip
@@ -146,11 +299,12 @@ export class AIStack extends cdk.Stack {
             }),
           ]
         })
-      }})
-    
+      }
+    })
+
     // Add CDK Nag suppression for wildcard resource
-    NagSuppressions.addResourceSuppressions(lexRole,  [{ 
-      id: 'AwsSolutions-IAM5', 
+    NagSuppressions.addResourceSuppressions(lexRole, [{
+      id: 'AwsSolutions-IAM5',
       reason: 'Wildcard permission is needed to create custom Lex execution role to use Polly Voices'
     }],);
 
@@ -193,12 +347,12 @@ export class AIStack extends cdk.Stack {
         },
         intents: [{
           name: 'Hello',
-          sampleUtterances: [{'utterance': 'Hello'}],
+          sampleUtterances: [{ 'utterance': 'Hello' }],
           intentClosingSetting: {
             closingResponse: {
               messageGroupsList: [{
                 message: {
-                  plainTextMessage: {value: 'Hello. How can I help you?'},
+                  plainTextMessage: { value: 'Hello. How can I help you?' },
                 },
               }],
             },
@@ -208,18 +362,18 @@ export class AIStack extends cdk.Stack {
               }
             }
           }
+        },
+        // Fallback Intent
+        {
+          name: 'FallbackIntent',
+          parentIntentSignature: 'AMAZON.FallbackIntent',
+          description: 'Invokes LexMessageProcessor Lambda function',
+          fulfillmentCodeHook: {
+            enabled: true,
           },
-          // Fallback Intent
-          {
-            name: 'FallbackIntent',
-            parentIntentSignature: 'AMAZON.FallbackIntent',
-            description: 'Invokes LexMessageProcessor Lambda function',
-            fulfillmentCodeHook: {
-              enabled: true,
-            },
-          },
-      ]
-    }]
+        },
+        ]
+      }]
     });
   }
 }
