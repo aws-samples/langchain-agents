@@ -243,7 +243,7 @@ export class AIStack extends cdk.Stack {
 
     // Build Langchain layer that includes Bedrock from layers/langchain-layer.zip
     const langchainBedrockLayer = new lambda.LayerVersion(this, 'LangchainLayer', {
-      code: lambda.Code.fromAsset('layers/langchain-bedrock'),
+      code: lambda.Code.fromAsset('layers/langchain-bedrock/langchain-aws.zip'),
       compatibleRuntimes: [lambda.Runtime.PYTHON_3_12],
       description: 'Langchain Layer Version 0.1.4',
       license: 'MIT',
@@ -256,10 +256,15 @@ export class AIStack extends cdk.Stack {
     // Grant Lambda function access to DynamoDB tables
     conversationTable.grantReadWriteData(LexMessageProcessor);
 
+    const langchainAPIKeyParam = new cdk.CfnParameter(this, 'langchainAPIKey', {
+      type: 'String',
+      description: 'Langsmith API Key.',
+    });
+
     // Stores Langsmith API key in AWS SSM Parameter Store
     const langchainAPIKey = new ssm.StringParameter(this, 'LANGCHAIN_API_KEY', {
       description: 'Langsmith API Key',
-      stringValue: process.env.LANGCHAIN_API_KEY!,
+      stringValue: langchainAPIKeyParam.valueAsString,
     });
 
     langchainAPIKey.grantRead(LexMessageProcessor);
