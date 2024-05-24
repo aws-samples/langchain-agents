@@ -120,7 +120,8 @@ Resources:
           - IngestionJob878E4082
           - Arn
       Principal: s3.amazonaws.com
-      SourceAccount: "399778958229"
+      SourceAccount: 
+        Ref: AWS::AccountId
       SourceArn:
         Fn::GetAtt:
           - WhatsappBucketa177bf076b7448d8abd2d1d4a9d307aa1B8A3400
@@ -178,8 +179,6 @@ Resources:
               Service: bedrock.amazonaws.com
           - Action: sts:AssumeRole
             Condition:
-              StringEquals:
-                aws:SourceAccount: "399778958229"
               ArnLike:
                 aws:SourceArn:
                   Fn::Join:
@@ -1319,7 +1318,7 @@ Resources:
       Description: Langsmith API Key
       Type: String
       Value: 
-        Ref: langchainAPIKey
+        Ref: LangchainAPIKey
     Metadata:
       aws:cdk:path: ServerlessAIStack/LANGCHAIN_API_KEY/Resource
   LexRoleD3586196:
@@ -1431,7 +1430,7 @@ Outputs:
         - WhatsappKnowledgeBaseKB5FDFD092
         - knowledgeBaseId
 Parameters:
-  langchainAPIKey:
+  LangchainAPIKey:
     Type: String
     Description: Langsmith API Key.
   BootstrapVersion:
