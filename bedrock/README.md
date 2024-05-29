@@ -42,13 +42,19 @@ cp .env.sample .env
 npm install
 ```
 
-5. Use AWS CDK to synthesize an AWS CloudFormation:
+5. The package [https://github.com/awslabs/generative-ai-cdk-constructs](generative-ai-cdk-constructs) should be added to your package.json.
+
+```
+npm install @cdklabs/generative-ai-cdk-constructs
+```
+
+6. Use AWS CDK to synthesize an AWS CloudFormation:
 
 ```
 npx cdk synth
 ```
 
-6. Use AWS CDK to deploy the AWS resources for the pattern:
+7. Use AWS CDK to deploy the AWS resources for the pattern:
 
 ```
 npx cdk deploy --require-approval never
