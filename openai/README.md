@@ -19,28 +19,22 @@
 
 ```
 git clone https://github.com/aws-samples/langchain-agents.git
-cd langchain-agents
+cd langchain-agents/openai
 ```
 
-2. Change directory to the backend directory:
-
-```
-cd back
-```
-
-3. Install the project dependencies:
+2. Install the project dependencies:
 
 ```
 npm install
 ```
 
-4. Export the OpenAI API Key to store it in AWS SSM Parameter Store:
+3. Export the OpenAI API Key to store it in AWS SSM Parameter Store:
 
 ```
 export OPENAI_API_KEY=<your-openai-api-key>
 ```
 
-5. The Cognito User Pool Domain must be unique. You can either go to the lib/ai-stack.ts and manually change the name or, if you are on a Mac, run the command below.
+4. The Cognito User Pool Domain must be unique. You can either go to the lib/ai-stack.ts and manually change the name or, if you are on a Mac, run the command below.
 
 ```
 timestamp=$(date +%Y%m%d%H%M%S)
@@ -54,13 +48,13 @@ Use the following command to install the bootstrap stack into the environment:
 npx cdk bootstrap
 ```
 
-6. Use AWS CDK to synthesize an AWS CloudFormation:
+5. Use AWS CDK to synthesize an AWS CloudFormation:
 
 ```
 npx cdk synth
 ```
 
-7. Use AWS CDK to deploy the AWS resources for the pattern:
+6. Use AWS CDK to deploy the AWS resources for the pattern:
 
 ```
 npx cdk deploy
@@ -68,7 +62,7 @@ npx cdk deploy
 
 During the deployment you will be asked to confirm the security-sensitive changes. Review it and enter y to deploy the stack and create the resources.
 
-8. Save the following from the outputted values:
+7. Save the following from the outputted values:
 
    a. UserPoolClientIdWeb.
 
@@ -76,20 +70,19 @@ During the deployment you will be asked to confirm the security-sensitive change
 
    c. FunctionUrl.
 
-9. Navigate back to the root directory and change directory to the frontend directory:
+8. Navigate back to the root directory and change directory to the frontend directory:
 
 ```
-cd ..
-cd front
+cd ../front-end
 ```
 
-10. Install the project dependencies:
+9. Install the project dependencies:
 
 ```
 npm install
 ```
 
-11. Configure a new AWS Amplify project:
+10. Configure a new AWS Amplify project:
 
 ```
 amplify init
@@ -101,7 +94,7 @@ amplify init
 amplify configure
 ```
 
-12. Import your existing auth resource to your local back-end
+11. Import your existing auth resource to your local back-end
 
 ```
 amplify import auth
@@ -109,7 +102,7 @@ amplify import auth
 
 Select the "Cognito User Pool and Identity Pool" option and select the values you saved previously.
 
-13. Provision cloud back-end resources with the latest local changes:
+12. Provision cloud back-end resources with the latest local changes:
 
 ```
 amplify push
