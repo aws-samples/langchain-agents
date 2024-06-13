@@ -6,7 +6,7 @@ Find the LLM provider that best suits your needs. This repository contains the c
   - [Bedrock Knowledge Base, Lex, LangSmith Project](./bedrock/knowledge-base-lex-langsmith/)
   - [Bedrcok LangChain Agent Project](./bedrock/langchain-agent/)
 - [OpenAI Project](https://openai.com/)
-  - [LangChain Agent](./openai/)
+  - [OpenAI LangChain Agent](./openai/)
 
 Currently the OpenAI stack includes a simple conversational Langchain agent running on AWS Lambda and using DynamoDB for memory that can be customized with tools and prompts. It also includes a simple web interface for interacting with the agent.
 

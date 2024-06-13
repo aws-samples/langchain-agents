@@ -10,7 +10,7 @@
 - [Amplify CLI](https://docs.amplify.aws/cli/start/install/) installed and configured
 
 ## Architecture Overview
-![Alt text](./Serverless-Conversational-AI-Langchain-Agent-Bedrock?raw=true "Architecture")
+![Alt text](./Serverless-Conversational-AI-Langchain-Agent-Bedrock.jpg?raw=true "Architecture")
 
 ## Deployment Instructions
 
