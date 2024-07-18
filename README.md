@@ -3,11 +3,14 @@
 Find the LLM provider that best suits your needs. This repository contains the code for supporting the following LLM providers:
 
 - [AWS Bedrock](https://aws.amazon.com/bedrock/)
-- [OpenAI](https://openai.com/)
+  - [Bedrock Knowledge Base, Lex, LangSmith Project](./bedrock/knowledge-base-lex-langsmith/)
+  - [Bedrcok LangChain Agent Project](./bedrock/langchain-agent/)
+- [OpenAI Project](https://openai.com/)
+  - [OpenAI LangChain Agent](./openai/)
 
 Currently the OpenAI stack includes a simple conversational Langchain agent running on AWS Lambda and using DynamoDB for memory that can be customized with tools and prompts. It also includes a simple web interface for interacting with the agent.
 
-The AWS Bedrock stack includes a conversational chain running on AWS Lambda, using DynamoDB for memory, and a Bedrock Knowledge Base for RAG. It is fronted through Amazon Lex and can be connected to Amazon Connect for a full call center experience.
+The AWS Bedrock stack includes a conversational chain running on AWS Lambda, using DynamoDB for memory, and a Bedrock Knowledge Base for RAG. It is fronted through Amazon Lex and can be connected to Amazon Connect for a full call center experience. There is also a simple agent that can be deployed with Bedrock.
 
 ## Creating a new Lambda Layer with the latest Langchain SDK
 To create a new Lambda Layer compatible with the latest Python runtime and the latest langchain, boto3 or openai package you can: Go into Amazon Codebuild. [Pick the runtime you are trying to build the Lambda Layer for](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html). Set the source as none and in the buildspec add the following:

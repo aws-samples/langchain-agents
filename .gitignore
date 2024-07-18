@@ -1,0 +1,9 @@
+*node_modules/
+.DS_STORE
+*lock.json
+*cdk.out
+*amplify/
+*.next/
+*amplifyconfiguration.json
+*aws-exports.js
+*.env.local
