@@ -7,7 +7,7 @@
 - [Git Installed](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [AWS Cloud Development Kit](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html) (AWS CDK) v2 Installed
 - [NodeJS and NPM](https://nodejs.org/en/download/) Installed
-- [Bedrock Model Access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html) Request Access for Anthropic Claude V1 Instant
+- [Bedrock Model Access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html) Request Access for Anthropic Claude 3 Sonnet.
 - [Bedrock Knowledge Base](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html) Create a Knowledge Base, set a data source, and sync it
 - [Langsmith](https://python.langchain.com/docs/get_started/quickstart) Generate a Langchain API key (free)
 
@@ -42,7 +42,7 @@ cp .env.sample .env
 npm install
 ```
 
-5. The package [https://github.com/awslabs/generative-ai-cdk-constructs](generative-ai-cdk-constructs) should be added to your package.json.
+5. The package [generative-ai-cdk-constructs](https://github.com/awslabs/generative-ai-cdk-constructs) should be added to your package.json.
 
 ```
 npm install @cdklabs/generative-ai-cdk-constructs
@@ -60,6 +60,21 @@ npx cdk synth
 npx cdk deploy --require-approval never
 ```
 
+## Use the Pre-Built AWS CloudFormation Template
+1. Log into the [AWS Console](https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1) if you are not already. 
+2. Choose the Launch Stack button below for your desired AWS region to open the [AWS CloudFormation console](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks?filteringText=&filteringStatus=active&viewNested=true) and create a new stack. 
+3. Enter the following parameters: 
+    - StackName: Name your Stack, e.g. WhatsAppAIStack. 
+    - LangchainAPIKey: The API key generated through [LangChain](https://docs.smith.langchain.com/how_to_guides/setup/create_account_api_key).
+    - Check the box to acknowledge creating IAM resources and click “Create Stack”.
+    - Wait for the stack creation to complete.
+    
+Region | Easy Deploy Button | Template URL - use to upgrade existing stack to a new release
+--- | --- | ---
+N. Virginia (us-east-1) | [![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://aws-blogs-artifacts-public.s3.amazonaws.com/ML-16776/template.yml) | [YML](https://aws-blogs-artifacts-public.s3.amazonaws.com/ML-16776/template.yml)
+
+Note: Upload files to the data source (S3) created for WhatsApp. As soon as you upload a file, the data source will synchronize automatically.
+
 ## Testing
 
 1. Navigate to Amazon Lex in your AWS account.
@@ -70,7 +85,7 @@ npx cdk deploy --require-approval never
 
 4. Enter a message in the text box and press the Enter key.
 
-5. Navigate to [https://smith.langchain.com](Langsmith) and check the trace of the app.
+5. Navigate to [Langsmith](https://smith.langchain.com) and check the trace of the app.
 
 ![Alt text](./langsmith_trace.png?raw=true "LangSmith trace")
 
