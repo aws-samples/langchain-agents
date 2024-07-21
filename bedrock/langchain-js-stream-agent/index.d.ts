@@ -1,7 +1,12 @@
 import { Context, Handler, LambdaFunctionURLEvent } from "aws-lambda";
 import { Writable } from "stream";
 
-// See https://github.com/llozano/lambda-stream-response/blob/main/src/%40types/awslambda/index.d.ts
+/**
+ * TypeScript Typings for the `awslambda` Module
+ *
+ * For more details, visit the GitHub repository:
+ * https://github.com/llozano/lambda-stream-response/blob/main/src/%40types/awslambda/index.d.ts
+ */
 declare global {
   namespace awslambda {
     export function streamifyResponse(

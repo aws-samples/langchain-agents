@@ -5,17 +5,27 @@ import type { PromptTemplate } from "@langchain/core/prompts";
 import { AgentExecutor, createReactAgent } from "langchain/agents";
 import { pull } from "langchain/hub";
 
+/**
+ * AWS Lambda with Streaming Response
+ * This functionality enables the AWS Lambda to send back a streaming response to the caller.
+ * For more details, refer to the AWS documentation:
+ * https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html
+ *
+ * LangChain Agent Creation
+ * Utilizes the LangChain API to create a reactive agent equipped with various tools.
+ * More information can be found at:
+ * https://v02.api.js.langchain.com/functions/langchain_agents.createReactAgent.html
+ */
 export const handler = awslambda.streamifyResponse(
   async (_evt, responseStream, _context) => {
-    // Set the response metadata
+    // Set the response content type to text/event-stream
+    // See https://github.com/serverless/serverless/discussions/12090#discussioncomment-6685223
     const metadata = {
       statusCode: 200,
       headers: {
         "Content-Type": "text/event-stream; charset=utf-8",
       },
     };
-
-    // Wrap the response stream
     responseStream = awslambda.HttpResponseStream.from(
       responseStream,
       metadata

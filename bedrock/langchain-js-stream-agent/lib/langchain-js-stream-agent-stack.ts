@@ -23,6 +23,8 @@ export class LangchainJsStreamAgentStack extends cdk.Stack {
       }
     );
 
+    // Warning: the Lambda URL is public and can be accessed by anyone
+    // Use an authentication mechanism to secure the endpoint
     const agentFunctionUrl = agentFunction.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.NONE,
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
