@@ -16,6 +16,7 @@ export class LangchainJsStreamAgentStack extends cdk.Stack {
         entry: join(__dirname, "..", "lambda", "agent.ts"),
         architecture: lambda.Architecture.ARM_64,
         runtime: lambda.Runtime.NODEJS_20_X,
+        timeout: cdk.Duration.seconds(60),
         bundling: {
           externalModules: [],
         },
