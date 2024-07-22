@@ -1,0 +1,32 @@
+{
+  "name": "langchain-js-stream-agent",
+  "version": "0.1.0",
+  "bin": {
+    "langchain-js-stream-agent": "bin/langchain-js-stream-agent.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.141",
+    "@types/jest": "^29.5.12",
+    "@types/node": "20.14.9",
+    "aws-cdk": "2.149.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.5",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.5.3"
+  },
+  "dependencies": {
+    "@langchain/aws": "^0.0.4",
+    "@langchain/community": "^0.2.20",
+    "@langchain/core": "^0.2.17",
+    "aws-cdk-lib": "2.149.0",
+    "constructs": "^10.0.0",
+    "langchain": "^0.2.10",
+    "source-map-support": "^0.5.21"
+  }
+}
