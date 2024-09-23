@@ -1,5 +1,5 @@
 from langchain_community.chat_models import BedrockChat
-from langchain_community.retrievers import AmazonKnowledgeBasesRetriever
+from langchain_aws.retrievers import AmazonKnowledgeBasesRetriever
 from langchain.schema import HumanMessage, AIMessage
 from langchain_community.chat_message_histories import DynamoDBChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -13,7 +13,8 @@ model_id = "anthropic.claude-3-sonnet-20240229-v1:0"
 
 def lambda_handler(event, context):
     set_langchain_api_key()
-    llm = BedrockChat(model_id=model_id)
+    bedrock_client = boto3.client("bedrock-runtime")
+    llm = BedrockChat(model_id=model_id, client=bedrock_client)
     session_id = event['sessionId']
     history = DynamoDBChatMessageHistory(
         table_name=os.environ["CONVERSATION_TABLE_NAME"],

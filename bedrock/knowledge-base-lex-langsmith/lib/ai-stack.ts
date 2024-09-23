@@ -259,6 +259,7 @@ export class AIStack extends cdk.Stack {
     const langchainAPIKeyParam = new cdk.CfnParameter(this, 'langchainAPIKey', {
       type: 'String',
       description: 'Langsmith API Key.',
+      default: process.env.LANGCHAIN_API_KEY || '',
     });
 
     // Stores Langsmith API key in AWS SSM Parameter Store
