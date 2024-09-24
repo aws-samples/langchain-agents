@@ -228,13 +228,7 @@ export class AIStack extends cdk.Stack {
     });
 
     // Build Langchain layer that includes OpenAI from layers/langchain-layer.zip
-    const langchainLayer = new lambda.LayerVersion(this, 'LangchainLayer', {
-      code: lambda.Code.fromAsset('layers/langchain-layer.zip'),
-      compatibleRuntimes: [lambda.Runtime.PYTHON_3_9],
-      description: 'Langchain Layer',
-      license: 'MIT',
-      layerVersionName: 'langchain-layer',
-    });
+    const langchainLayer = new lambda.LayerVersion.fromLayerVersionArn(this, 'LangchainLayer', 'arn:aws:lambda:us-east-1:049513818483:layer:openai:2');
     AIMessageProcessor.addLayers(langchainLayer);
 
     // Grant Lambda function access to DynamoDB tables
