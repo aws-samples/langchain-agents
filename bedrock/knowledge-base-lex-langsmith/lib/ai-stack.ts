@@ -242,13 +242,7 @@ export class AIStack extends cdk.Stack {
     );
 
     // Build Langchain layer that includes Bedrock from layers/langchain-layer.zip
-    const langchainBedrockLayer = new lambda.LayerVersion(this, 'LangchainLayer', {
-      code: lambda.Code.fromAsset('layers/langchain-bedrock/langchain-aws.zip'),
-      compatibleRuntimes: [lambda.Runtime.PYTHON_3_12],
-      description: 'Langchain Layer Version 0.1.4',
-      license: 'MIT',
-      layerVersionName: 'langchain-layer',
-    });
+    const langchainBedrockLayer = lambda.LayerVersion.fromLayerVersionArn(this, 'LangChainLayer', 'arn:aws:lambda:us-east-1:049513818483:layer:langchain-layer:25')
 
     // Add Langchain layer to Lambda function
     LexMessageProcessor.addLayers(langchainBedrockLayer);

@@ -246,13 +246,8 @@ export class LangchainAgentStack extends cdk.Stack {
     });
 
     // Build Langchain layer that includes Bedrock from ../layers/langchain-aws.zip
-    const langchainLayer = new lambda.LayerVersion(this, 'LangchainLayer', {
-      code: lambda.Code.fromAsset('../knowledge-base-lex-langsmith/layers/langchain-bedrock/langchain-aws.zip'),
-      compatibleRuntimes: [lambda.Runtime.PYTHON_3_12],
-      description: 'Langchain Layer',
-      license: 'MIT',
-      layerVersionName: 'langchain-layer',
-    });
+    const langchainLayer = lambda.LayerVersion.fromLayerVersionArn(this, 'LangChainLayer', 'arn:aws:lambda:us-east-1:049513818483:layer:langchain-layer:25')
+    
     AIMessageProcessor.addLayers(langchainLayer);
 
     // Grant Lambda function access to DynamoDB tables
