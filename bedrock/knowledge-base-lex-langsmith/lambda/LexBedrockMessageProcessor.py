@@ -67,6 +67,9 @@ def lambda_handler(event, context):
         | llm
     )
     response = rag_chain.invoke({"question": user_message, "chat_history": history.messages})
+    # Add user message and AI message
+    history.add_user_message(user_message)
+    history.add_ai_message(response)
     return lex_response(event, response.content)
 
 def lex_response(event, message):

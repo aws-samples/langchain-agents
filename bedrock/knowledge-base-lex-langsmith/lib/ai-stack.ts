@@ -84,9 +84,10 @@ export class AIStack extends cdk.Stack {
           bucket: wspBucket,
           knowledgeBase: wspKnowledgeBase,
           dataSourceName: "Whatsapp",
-          chunkingStrategy: bedrock.ChunkingStrategy.FIXED_SIZE,
-          maxTokens: 1024,
-          overlapPercentage: 20,
+          chunkingStrategy: bedrock.ChunkingStrategy.fixedSize({
+            maxTokens: 1024,
+            overlapPercentage: 20,
+          }),
         }
       );
 
@@ -269,7 +270,7 @@ export class AIStack extends cdk.Stack {
     LexMessageProcessor.addEnvironment('CONVERSATION_TABLE_NAME', conversationTable.tableName);
     // For tracing
     LexMessageProcessor.addEnvironment('LANGCHAIN_TRACING_V2', "true");
-    LexMessageProcessor.addEnvironment('LANGSMITH_ENDPOINT', 'https://api.langsmith.com');
+    LexMessageProcessor.addEnvironment('LANGSMITH_ENDPOINT', 'https://api.smith.langchain.com');
     LexMessageProcessor.addEnvironment('LANGCHAIN_API_KEY_PARAMETER_NAME', langchainAPIKey.parameterName);
     LexMessageProcessor.addEnvironment('LANGCHAIN_PROJECT', `Claude-Agent-With-KB-${knowledge_base_id}`);
 
