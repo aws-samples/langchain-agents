@@ -203,7 +203,7 @@ export class AIStack extends cdk.Stack {
                 'bedrock:InvokeModel',
               ],
               resources: [
-                `arn:aws:bedrock:${props?.env?.region}::foundation-model/${bedrock.BedrockFoundationModel.ANTHROPIC_CLAUDE_SONNET_V1_0}`,
+                `arn:aws:bedrock:${props?.env?.region}::foundation-model/${bedrock.BedrockFoundationModel.ANTHROPIC_CLAUDE_HAIKU_V1_0}`,
               ]
             }),
             new iam.PolicyStatement({
@@ -251,7 +251,7 @@ export class AIStack extends cdk.Stack {
     // Grant Lambda function access to DynamoDB tables
     conversationTable.grantReadWriteData(LexMessageProcessor);
 
-    const langchainAPIKeyParam = new cdk.CfnParameter(this, 'langchainAPIKey', {
+    const langchainAPIKeyParam = new cdk.CfnParameter(this, 'LangchainAPIKey', {
       type: 'String',
       description: 'Langsmith API Key.',
       default: process.env.LANGCHAIN_API_KEY || '',

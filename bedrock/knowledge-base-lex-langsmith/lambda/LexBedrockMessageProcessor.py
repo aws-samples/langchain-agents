@@ -9,7 +9,7 @@ import boto3
 import os
 import json
 
-model_id = "anthropic.claude-3-sonnet-20240229-v1:0"
+model_id = "anthropic.claude-3-haiku-20240307-v1:0"
 
 def lambda_handler(event, context):
     set_langchain_api_key()
