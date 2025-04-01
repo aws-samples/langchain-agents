@@ -24,7 +24,7 @@
     "@langchain/aws": "^0.0.4",
     "@langchain/community": "^0.3.3",
     "@langchain/core": "^0.2.17",
-    "aws-cdk-lib": "2.177.0",
+    "aws-cdk-lib": "2.186.0",
     "constructs": "^10.0.0",
     "langchain": "^0.2.20",
     "source-map-support": "^0.5.21"
